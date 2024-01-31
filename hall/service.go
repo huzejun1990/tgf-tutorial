@@ -4,10 +4,13 @@ package hall
 import (
 	"context"
 	"fmt"
+	propservice "github.com/huzejun1990/tgf/tgf-tutorial/common/api/prop"
+	"github.com/huzejun1990/tgf/tgf-tutorial/common/model"
 	"github.com/huzejun1990/tgf/tgf-tutorial/common/pb"
 	"github.com/thkhxm/tgf/log"
 	"github.com/thkhxm/tgf/rpc"
 	"github.com/thkhxm/tgf/util"
+	"math/rand"
 )
 
 var (
@@ -16,6 +19,16 @@ var (
 )
 
 type service struct {
+}
+
+func (s *service) LoadUserData(ctx context.Context, args *rpc.Args[*pb.LoadUserDataRequest], reply *rpc.Reply[*pb.LoadUserDataResponse]) (err error) {
+	// 用户登陆成功之后，请求大厅的LoadUserData接口，大厅节点通过rpc,获取Prop节点的道具信息
+	propId, _ := util.AnyToStr(rand.Int31n(10))
+	rpcReply := &model.GetUserPropReply{}
+	rpc.SendRPCMessage(ctx, propservice.GetUserPropCount.New(&model.GetUserPropArgs{PropId: propId}, rpcReply))
+	log.DebugTag("hall", "load user data propId=%v count=%v", propId, rpcReply.Count)
+	reply.SetData(&pb.LoadUserDataResponse{Name: "tgf framework", PropCount: rpcReply.Count})
+	return
 }
 
 func (s *service) Login(ctx context.Context, args *rpc.Args[*pb.LoginRequest], reply *rpc.Reply[*pb.LoginResponse]) (err error) {
