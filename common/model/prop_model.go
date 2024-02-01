@@ -6,5 +6,6 @@ type GetUserPropArgs struct {
 }
 
 type GetUserPropReply struct {
+	Name  string
 	Count int32
 }

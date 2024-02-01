@@ -10,7 +10,6 @@ import (
 	"github.com/thkhxm/tgf/log"
 	"github.com/thkhxm/tgf/rpc"
 	"github.com/thkhxm/tgf/util"
-	"math/rand"
 )
 
 var (
@@ -23,11 +22,12 @@ type service struct {
 
 func (s *service) LoadUserData(ctx context.Context, args *rpc.Args[*pb.LoadUserDataRequest], reply *rpc.Reply[*pb.LoadUserDataResponse]) (err error) {
 	// 用户登陆成功之后，请求大厅的LoadUserData接口，大厅节点通过rpc,获取Prop节点的道具信息
-	propId, _ := util.AnyToStr(rand.Int31n(10))
+	//propId, _ := util.AnyToStr(rand.Int31n(10))
+	propId, _ := util.AnyToStr(100033)
 	rpcReply := &model.GetUserPropReply{}
 	rpc.SendRPCMessage(ctx, propservice.GetUserPropCount.New(&model.GetUserPropArgs{PropId: propId}, rpcReply))
-	log.DebugTag("hall", "load user data propId=%v count=%v", propId, rpcReply.Count)
-	reply.SetData(&pb.LoadUserDataResponse{Name: "tgf framework", PropCount: rpcReply.Count})
+	log.DebugTag("hall", "load user data propId=%v propName=%s count=%v", propId, rpcReply.Name, rpcReply.Count)
+	reply.SetData(&pb.LoadUserDataResponse{Name: rpcReply.Name, PropCount: rpcReply.Count})
 	return
 }
 

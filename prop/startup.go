@@ -11,6 +11,7 @@ func Startup() {
 		WithRandomServicePort(8021, 8030).
 		WithCache(tgf.CacheModuleClose).
 		WithService(NewService()).
+		WithGameConfig("../Common/conf/js").
 		Run()
 	<-r
 }
